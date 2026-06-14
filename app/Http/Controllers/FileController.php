@@ -32,6 +32,8 @@ class FileController extends Controller
             'user_id'      => auth()->id(),
             'folder_id'    => $request->folder_id,
             'storage_type' => $request->storage_type,
+            'sender_id' => null,
+            'document_date' => $request->document_date,
         ];
 
         if ($request->storage_type === 'local') {
@@ -65,10 +67,12 @@ class FileController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:150',
+            'document_date' => 'nullable|date',
         ]);
 
         $file->update([
             'name' => $request->name,
+            'document_date' => $request->document_date,
         ]);
 
         return back()->with('success', 'File berhasil diubah');

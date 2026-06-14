@@ -3,9 +3,32 @@
 @section('content')
     <!-- Hoverable Table rows -->
     <div class="card">
-    <h5 class="card-header">Akses Arsip</h5>
-    <div class="table-responsive text-nowrap">
-        {{-- <a href="{{ route('user.create') }}" class="btn btn-sm btn-primary mx-3 mb-2"><i class="bx bx-plus-circle me-1"></i> Tambah</a> --}}
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-3 px-5">
+        <h5 class="mb-0">Akses Arsip</h5>
+        <form method="GET" action="{{ route('akses-arsip.index') }}">
+            <div class="input-group shadow-sm">
+
+                <span class="input-group-text">
+                    <i class="bx bx-search"></i>
+                </span>
+
+                <input type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Cari nama pegawai..."
+                    value="{{ request('search') }}">
+
+                @if(request('search'))
+                    <a href="{{ route('akses-arsip.index') }}"
+                    class="btn btn-outline-secondary">
+                        Reset
+                    </a>
+                @endif
+
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive text-nowrap px-5">
         <table class="table table-hover text-center">
         <thead>
             <tr>
@@ -18,9 +41,9 @@
             </tr>
         </thead>
         <tbody class="table-border-bottom-0">
-            @foreach ($users as $user)
+            @forelse ($users as $user)
             <tr>
-                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>{{ $loop->iteration ?? '' }}</td>
+                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>{{ $users->firstItem() + $loop->index }}</td>
                 <td>{{ $user->name ?? '-' }}</td>
                 <td class="">
                   <div
@@ -57,11 +80,26 @@
                     <a href="{{ route('akses-arsip.show', $user->id) }}" class="btn btn-sm btn-info"><i class="bx bx-show me-1"></i> Buka</a>
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="6" class="py-5 text-center">
+
+                    <i class="bx bx-search-alt fs-1 text-muted d-block mb-2"></i>
+
+                    <div class="text-muted">
+                        Tidak ditemukan data untuk
+                        <strong>"{{ request('search') }}"</strong>
+                    </div>
+
+                </td>
+            </tr>
+            @endforelse
         </tbody>
         </table>
     </div>
+    <div class="card-footer px-5">
+        {{ $users->onEachSide(1)->links() }}
+    </div>
     </div>
     <!--/ Hoverable Table rows -->
-
 @endsection

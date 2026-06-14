@@ -1,7 +1,7 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
     <a href="{{ route('dashboard') }}" class="app-brand-link">
-        <img src="{{ asset('dist/assets/img/logo.png') }}" alt="" class="w-75 mx-auto">
+        <img src="{{ asset('dist/assets/img/logo.png') }}" alt="" class="w-25">
         {{-- <span class="app-brand-logo demo">
         <svg
             width="25"
@@ -57,7 +57,7 @@
             </g>
         </svg>
         </span> --}}
-        {{-- <span class="app-brand-text demo menu-text fw-bolder ms-2">Sneat</span> --}}
+        <span class="menu-text fw-bolder ms-2 fs-4">SEMTADA</span>
     </a>
 
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -96,7 +96,7 @@
         </a>
     </li>
     <li class="menu-item {{ request()->routeIs('kirim-arsip.*') ? 'active' : '' }}">
-        <a href="#" class="menu-link">
+        <a href="{{ route('kirim-arsip.index') }}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-send"></i>
             <div>Kirim Arsip</div>
         </a>

@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AksesArsipController;
 use App\Http\Controllers\ArsipController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\KirimArsipController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -21,17 +23,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $users = User::all();
+    $users = User::where('jabatan', '!=', 'admin')->get();
     return view('welcome', compact('users'));
 });
 
-Route::get('/dashboard', function () {
-    return view('myPages.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Arsip
@@ -62,6 +61,15 @@ Route::middleware(['role:admin,kepala_madrasah,kaur'])->group(function () {
         Route::get('/', [AksesArsipController::class, 'index'])->name('akses-arsip.index');
         Route::get('/show/{user}', [AksesArsipController::class, 'show'])->name('akses-arsip.show');
         Route::get('/open/{user}/folder/{folder}', [AksesArsipController::class, 'openFolder'])->name('akses-arsip.openFolder');
+    });
+
+    // Kirim Arsip
+    Route::prefix('kirim-arsip')->group(function () {
+        Route::get('/', [KirimArsipController::class, 'index'])->name('kirim-arsip.index');
+        Route::get('/create', [KirimArsipController::class, 'create'])->name('kirim-arsip.create');
+        Route::post('/store', [KirimArsipController::class, 'store'])->name('kirim-arsip.store');
+        Route::get('/show/{batchId}', [KirimArsipController::class, 'show'])->name('kirim-arsip.show');
+        Route::delete('/destroy/{batchId}', [KirimArsipController::class, 'destroy'])->name('kirim-arsip.destroy');
     });
 });
 

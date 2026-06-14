@@ -63,7 +63,7 @@ id="layout-navbar"
                 </div>
                 <div class="flex-grow-1">
                 <span class="fw-semibold d-block">{{ Auth::user()->name ?? 'Anonymous' }}</span>
-                <small class="text-muted">{{ Auth::user()->jabatan ?? 'I dont know' }}</small>
+                <small class="text-muted text-capitalize">{{ Auth::user()->jabatan ?? 'I dont know' }}</small>
                 </div>
             </div>
             </a>
@@ -72,7 +72,7 @@ id="layout-navbar"
             <div class="dropdown-divider"></div>
         </li>
         <li>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="{{ route('profile.edit') }}">
             <i class="bx bx-user me-2"></i>
             <span class="align-middle">My Profile</span>
             </a>

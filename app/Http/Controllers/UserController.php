@@ -9,9 +9,19 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $users = User::when($request->search, function ($query) use ($request) {
+
+            $query->where(function ($q) use ($request) {
+
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('jabatan', 'like', '%' . $request->search . '%');
+            });
+        })
+
+            ->paginate(5);
+
         return view('myPages.user.index', compact('users'));
     }
 
@@ -26,7 +36,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => 'required|confirmed|min:8',
-            'jabatan'  => ['required', 'in:admin, guru, kepala_madrasah, kaur, tu, wakil'],
+            // 'jabatan'  => ['required', 'in:admin, guru, kepala_madrasah, kaur, tu, wakil'],
             'foto'     => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 

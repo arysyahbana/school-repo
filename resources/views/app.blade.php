@@ -17,7 +17,6 @@
     <title>@yield('title')</title>
 
     <meta name="description" content="" />
-
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
 
@@ -32,6 +31,7 @@
    @include('myLayouts.css')
 
    @include('myLayouts.jsheader')
+
   </head>
 
   <body>
@@ -72,6 +72,11 @@
 
     @include('myLayouts.js')
 
+    {{-- select2 --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js">
+    </script>
+
     <div id="toastContainer" class="position-fixed top-0 end-0 p-3"
         style="z-index: 2000; margin-top: 70px;">
 
@@ -100,6 +105,15 @@
         @endif
     </div>
 
+    <script>
+       $(document).ready(function() {
+            $('.js-example-basic-single').select2({
+                placeholder: 'Pilih pengguna',
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script>
@@ -112,6 +126,10 @@
 
             @if(session('error'))
                 createToast("{{ session('error') }}", 'danger');
+            @endif
+
+            @if($errors->any())
+                createToast("{{ $errors->first() }}", 'danger');
             @endif
 
             // Fungsi buat toast

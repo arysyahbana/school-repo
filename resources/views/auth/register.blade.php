@@ -44,8 +44,8 @@
             >
                 <option value="">-- Pilih Jabatan --</option>
                 <option value="guru" {{ old('jabatan') == 'guru' ? 'selected' : '' }}>Guru</option>
-                <option value="kepala_madrasah" {{ old('jabatan') == 'kepala_madrasah' ? 'selected' : '' }}>Kepala Madrasah</option>
-                <option value="kaur" {{ old('jabatan') == 'kaur' ? 'selected' : '' }}>Kaur</option>
+                {{-- <option value="kepala_madrasah" {{ old('jabatan') == 'kepala_madrasah' ? 'selected' : '' }}>Kepala Madrasah</option>
+                <option value="kaur" {{ old('jabatan') == 'kaur' ? 'selected' : '' }}>Kaur</option> --}}
                 <option value="tu" {{ old('jabatan') == 'tu' ? 'selected' : '' }}>TU</option>
                 <option value="wakil" {{ old('jabatan') == 'wakil' ? 'selected' : '' }}>Wakil</option>
             </select>

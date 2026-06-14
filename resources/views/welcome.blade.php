@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     @vite('resources/css/app.css')
+    <title>Arsip MTsN 9 TD</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   </head>
   <body>
     <div class="h-full bg-slate-50">
@@ -11,7 +13,7 @@
         <nav id="navbar" class="fixed w-full z-20 top-0 start-0 transition-all duration-300">
             <div class="container max-w-screen flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="#" class="space-x-3 rtl:space-x-reverse">
-                    <img src="{{ asset('dist/assets/img/logo.png') }}" class="w-32" alt="logo">
+                    <img src="{{ asset('dist/assets/img/logo.png') }}" class="w-20" alt="logo">
                 </a>
                 <div class="flex items-center gap-8 md:order-2">
                     <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
@@ -63,16 +65,29 @@
 
         <section id="banner" class="relative overflow-hidden md:min-h-[65vh]">
             <img
-                src="{{ asset('dist/assets/img/backgrounds/Hero 3.jpg') }}"
+                src="{{ asset('dist/assets/img/backgrounds/Hero5.jpg') }}"
                 class="absolute inset-0 w-full h-full object-cover"
                 alt=""
             />
 
-            <div class="absolute inset-0 bg-black/10"></div>
+            <div class="absolute inset-0 bg-black/50"></div>
 
-            <div class="relative container mx-auto pt-24 pb-12 md:pt-48">
+            <div class="relative container mx-auto pt-16 pb-12 md:pt-48">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div class="text-center md:text-start">
+                        <p class="inline-flex items-center gap-2
+                                text-teal-300
+                                font-semibold
+                                uppercase
+                                tracking-[0.25em]
+                                text-sm
+                                mb-4">
+
+                            <span class="w-8 h-[2px] bg-teal-400"></span>
+
+                            MTsN 9 Tanah Datar
+
+                        </p>
                         <h1 class="text-white text-5xl md:text-7xl font-bold mb-4">
                             Sistem <span class="text-teal-500 [-webkit-text-stroke:0.8px_white]">Arsip</span> <br> <span class="text-teal-500 [-webkit-text-stroke:0.8px_white]">Digital</span> Terpadu
                         </h1>
@@ -171,7 +186,7 @@
                         <!-- CARD 3 -->
                         <div class="bg-white rounded-3xl shadow-md p-8 text-left hover:shadow-lg transition">
                         <div class="mb-6 text-center">
-                            <img src="{{ asset('dist/assets/img/logo.png') }}" alt="" class="rounded-2xl">
+                            <img src="{{ asset('dist/assets/img/logo.png') }}" alt="" class="w-24 mx-auto rounded-2xl">
                         </div>
 
                         <h3 class="text-2xl font-bold text-yellow-400 mb-3">
@@ -193,7 +208,7 @@
                     <h2 class="text-4xl font-bold mb-2 text-green-600">Fitur Unggulan</h2>
                     <p class="text-slate-600">Semua yang Anda butuhkan untuk tetap terorganisir</p>
                 </div>
-                <div class="flex flex-wrap gap-8 mt-8 md:items-center justify-center border">
+                <div class="flex flex-wrap gap-8 mt-8 md:items-center justify-center">
                     <div class="bg-white shadow rounded-xl p-4 w-1/4 min-h-[105px] hover:shadow-lg transition duration-300 cursor-default">
                         <div class="flex flex-col md:flex-row gap-2">
                             <div class="min-w-20 min-h-20 rounded-lg bg-green-100 flex items-center justify-center">
@@ -266,46 +281,74 @@
                     <p class="text-slate-600">Dipercaya oleh para profesional seperti Anda.</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mt-8 mx-10">
-                    @forelse ($users as $user)
-                        <div class="bg-white shadow hover:shadow-lg transition duration-300 rounded-xl p-6">
-                            <div class="flex flex-col items-center text-center">
+                @php
+                    $chunks = $users->chunk(6);
+                @endphp
+                <div class="swiper userSwiper">
 
-                                <!-- Avatar -->
-                                <div class="w-20 h-20 mb-4 bg-slate-100 rounded-full overflow-hidden flex items-center justify-center">
-                                    <img
-                                        src="{{ $user->foto ? asset('storage/'.$user->foto) : 'https://ui-avatars.com/api/?name='.$user->name }}"
-                                        alt="{{ $user->name }}"
-                                        class="w-full h-full object-cover"
-                                    >
+                    <div class="swiper-wrapper">
+
+                        @foreach($chunks as $group)
+
+                            <div class="swiper-slide">
+
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 py-12">
+
+                                    @foreach($group as $user)
+
+                                        {{-- CARD USER --}}
+                                        <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+
+                                            <div class="h-12
+                                                @if($user->jabatan == 'kepala_madrasah')
+                                                    bg-blue-500
+                                                @elseif($user->jabatan == 'wakil')
+                                                    bg-indigo-500
+                                                @elseif($user->jabatan == 'guru')
+                                                    bg-green-500
+                                                @elseif($user->jabatan == 'kaur')
+                                                    bg-amber-500
+                                                @elseif($user->jabatan == 'tu')
+                                                    bg-slate-500
+                                                @else
+                                                    bg-red-500
+                                                @endif">
+                                            </div>
+
+                                            <div class="px-5 pb-5 text-center">
+
+                                                <div class="-mt-10 mb-3 flex justify-center">
+
+                                                    <img
+                                                        src="{{ $user->foto ? asset('storage/'.$user->foto) : 'https://ui-avatars.com/api/?name='.$user->name }}"
+                                                        class="w-20 h-20 rounded-full border-4 border-white shadow object-cover">
+
+                                                </div>
+
+                                                <h3 class="font-bold text-slate-800 line-clamp-1">
+                                                    {{ $user->name }}
+                                                </h3>
+
+                                                <p class="text-sm text-slate-500 mb-3">
+                                                    {{ ucwords(str_replace('_',' ', $user->jabatan)) }}
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    @endforeach
+
                                 </div>
 
-                                <h3 class="text-md font-semibold text-slate-800">
-                                    {{ $user->name }}
-                                </h3>
-
-                                <!-- Badge Jabatan -->
-                                @php
-                                    $badge = match($user->jabatan) {
-                                        'admin' => 'bg-red-100 text-red-600',
-                                        'kepala_madrasah' => 'bg-blue-100 text-blue-600',
-                                        'kaur' => 'bg-amber-100 text-amber-600',
-                                        'guru' => 'bg-green-100 text-green-600',
-                                        default => 'bg-slate-100 text-slate-600'
-                                    };
-                                @endphp
-
-                                <span class="mt-2 px-3 py-1 text-xs font-medium rounded-full uppercase {{ $badge }}">
-                                    {{ str_replace('_',' ', $user->jabatan) }}
-                                </span>
-
                             </div>
-                        </div>
-                    @empty
-                        <div class="col-span-full text-center py-10">
-                            <p class="text-slate-500 text-sm">Belum ada pengguna</p>
-                        </div>
-                    @endforelse
+
+                        @endforeach
+
+                    </div>
+
+                    <div class="swiper-pagination mt-8"></div>
+
                 </div>
             </div>
         </section>
@@ -335,6 +378,7 @@
             </div>
         </footer>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   </body>
 
     <script>
@@ -348,5 +392,24 @@
             }
         });
     </script>
+
+    <script>
+new Swiper(".userSwiper", {
+
+    loop: true,
+
+    autoplay: {
+        delay: 4000,
+        disableOnInteraction: false,
+    },
+
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+    },
+
+    speed: 800,
+});
+</script>
 
 </html>

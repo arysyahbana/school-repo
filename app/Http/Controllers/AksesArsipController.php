@@ -9,10 +9,20 @@ use Illuminate\Http\Request;
 
 class AksesArsipController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::withCount('files')->get();
-        return view('myPages.aksesArsip.index', compact('users'));
+        $users = User::withCount('files')
+
+            ->when($request->search, function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            })
+
+            ->paginate(5);
+
+        return view(
+            'myPages.aksesArsip.index',
+            compact('users')
+        );
     }
     // Lihat arsip guru (root)
     public function show(User $user)

@@ -2,40 +2,100 @@
 @section('title', 'Arsip')
 @section('content')
     <style>
-        .folder-card {
-            transition: 0.2s ease-in-out;
-            border-radius: 12px;
+        .folder-card{
+            border-radius:18px;
+            transition:.25s;
+            background:#fff;
+            cursor:pointer;
+            border:1px solid #eceef1;
+            border-top:5px solid transparent;
         }
 
-        .folder-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+        .folder-card:hover{
+            transform:translateY(-4px);
+            box-shadow:0 10px 24px rgba(0,0,0,.12);
         }
 
-        .context-menu {
-            display: none;
-            position: absolute;
-            z-index: 999;
+        .folder-icon{
+            width:56px;
+            height:56px;
+            border-radius:14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#f5f5f9;
+        }
+
+        .folder-icon i{
+            font-size:2rem;
+            color:#566a7f;
+        }
+
+        .folder-name{
+            font-weight:600;
+            line-height:1.4;
+            margin:0;
+        }
+
+        .folder-accent{
+            width:6px;
+            height:22px;
+            border-radius:999px;
+            display:block;
+        }
+
+        .folder-color-dot{
+            width:10px;
+            height:10px;
+            border-radius:50%;
+            display:inline-block;
+            flex-shrink:0;
+        }
+        .context-menu{
+            display:none;
+            position:fixed;
+            z-index:9999;
+
+            background:#fff;
+            border:0;
+            border-radius:12px;
+            min-width:200px;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,.08),
+                0 1px 3px rgba(0,0,0,.06);
+        }
+
+        .context-menu .dropdown-item{
+            padding:.65rem 1rem;
+            transition:.15s;
+            border-radius:8px;
+        }
+
+        .context-menu .dropdown-item:hover{
+            background:#f5f5f9;
         }
         .file-card {
-            border-radius: 14px;
-            /* overflow: hidden; */
+            border-radius: 16px;
+            overflow: visible;
             cursor: pointer;
             background: #f8f9fa;
             box-shadow: 0 8px 20px rgba(0,0,0,.06);
             transition: transform .2s ease, box-shadow .2s ease;
         }
 
-        .file-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 30px rgba(0,0,0,.12);
-        }
+        /* .file-card:hover {
+            transform: translateY(-3px);
+            box-shadow:0 12px 28px rgba(0,0,0,.12);
+        } */
 
         /* preview area */
         .file-preview {
             width: 100%;
             height: 180px;
             background: #e9ecef;
+            overflow:hidden;
+            border-radius:16px 16px 0 0;
         }
 
         .file-preview img,
@@ -44,6 +104,7 @@
             height: 100%;
             object-fit: cover;
             border: none;
+            pointer-events:none;
         }
 
         /* fallback icon */
@@ -69,34 +130,69 @@
             z-index: 3;
         }
 
-        /* hover overlay */
-        .file-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                to top,
-                rgba(0,0,0,.65),
-                rgba(0,0,0,.2),
-                transparent
-            );
-            opacity: 0;
-            transition: opacity .2s ease;
-            display: flex;
-            align-items: flex-end;
+        .file-info{
+            padding:12px;
+            background:#fff;
+            border-radius:0 0 16px 16px;
         }
 
-        .file-card:hover .file-overlay {
-            opacity: 1;
+        .file-name{
+            font-weight:600;
+            font-size:14px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            margin-bottom:6px;
         }
 
-        /* title */
-        .file-title {
-            color: #fff;
-            font-weight: 600;
-            padding: 12px;
-            width: 100%;
-            font-size: 14px;
-            line-height: 1.3;
+        .file-date{
+            font-size:12px;
+            color:#8592a3;
+            display:flex;
+            align-items:center;
+            gap:4px;
+        }
+
+        .file-sender{
+            margin-top:12px;
+            padding:8px 10px;
+            background:#f5f5f9;
+            border-radius:12px;
+
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .sender-avatar{
+            width:34px;
+            height:34px;
+            border-radius:50%;
+            overflow:hidden;
+            background:#696cff;
+            color:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:13px;
+            font-weight:600;
+            flex-shrink:0;
+        }
+
+        .sender-avatar img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .sender-name{
+            font-size:13px;
+            font-weight:600;
+        }
+
+        .border-dashed {
+            border-style: dashed !important;
+            border-width: 2px !important;
         }
 
     </style>
@@ -147,19 +243,44 @@
                             data-url="{{ route('akses-arsip.openFolder', [$user->id, $folder->id]) }}"
                             data-name="{{ $folder->name }}">
 
-                            <div class="card border-0 shadow-sm folder-card">
-                                <div class="card-body text-center">
-                                    <i class="bx bxs-folder fs-1"
-                                    style="color: {{ $folder->color ?? '#fbc02d' }}"></i>
+                            <div class="card folder-card h-100" style="border-top:5px solid {{ $folder->color }}">
 
-                                    <h6 class="mt-2 mb-0 text-dark">
-                                        {{ $folder->name }}
-                                    </h6>
+                                <div class="card-body">
 
-                                    <small class="text-muted">
-                                        {{ $folder->files_count }} File
-                                    </small>
+                                    <div class="folder-header mb-3">
+
+                                        <div class="folder-icon">
+                                            <i class="bx bxs-folder"></i>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+
+                                        <span class="folder-accent"
+                                            style="background-color: {{ $folder->color ?? '#fbc02d' }}">
+                                        </span>
+
+                                        <h6 class="folder-name mb-0">
+                                            {{ $folder->name }}
+                                        </h6>
+
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+
+                                        <small class="text-muted">
+                                            {{ $folder->files_count }} File
+                                        </small>
+
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bx bx-chevron-right text-muted"></i>
+                                        </div>
+
+                                    </div>
+
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -208,6 +329,47 @@
                                                 allow="autoplay"
                                             ></iframe>
 
+                                        @elseif(
+                                            $file->storage_type === 'local' &&
+                                            in_array($file->mime_type, [
+                                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                                'application/msword'
+                                            ])
+                                        )
+
+                                            <div class="file-fallback text-primary">
+                                                <i class="bx bxs-file-doc fs-1"></i>
+                                                <small class="d-block mt-2">Word</small>
+                                            </div>
+
+                                        {{-- EXCEL --}}
+                                        @elseif(
+                                            $file->storage_type === 'local' &&
+                                            in_array($file->mime_type, [
+                                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                                'application/vnd.ms-excel'
+                                            ])
+                                        )
+
+                                            <div class="file-fallback text-success">
+                                                <i class="bx bxs-spreadsheet fs-1"></i>
+                                                <small class="d-block mt-2">Excel</small>
+                                            </div>
+
+                                        {{-- POWERPOINT --}}
+                                        @elseif(
+                                            $file->storage_type === 'local' &&
+                                            in_array($file->mime_type, [
+                                                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                                                'application/vnd.ms-powerpoint'
+                                            ])
+                                        )
+
+                                            <div class="file-fallback text-danger">
+                                                <i class="bx bxs-slideshow fs-1"></i>
+                                                <small class="d-block mt-2">PowerPoint</small>
+                                            </div>
+
                                         {{-- FALLBACK --}}
                                         @else
                                             <div class="file-fallback">
@@ -217,22 +379,70 @@
 
                                     </div>
 
-                                    {{-- hover overlay --}}
-                                    <div class="file-overlay">
-                                        <div class="file-title">
+                                    <div class="file-info">
+
+                                        <div class="file-name"
+                                            title="{{ $file->name }}">
+
                                             {{ $file->name }}
+
                                         </div>
+
+                                        @if($file->document_date)
+                                            <div class="file-date">
+
+                                                <i class="bx bx-calendar"></i>
+
+                                                {{ \Carbon\Carbon::parse($file->document_date)->format('d M Y') }}
+
+                                            </div>
+                                        @endif
+
+                                        @if($file->sender)
+
+                                            <div class="file-sender">
+
+                                                <div class="sender-avatar">
+
+                                                    @if($file->sender->foto)
+
+                                                        <img src="{{ asset('storage/'.$file->sender->foto) }}">
+
+                                                    @else
+
+                                                        {{ strtoupper(substr($file->sender->name,0,1)) }}
+
+                                                    @endif
+
+                                                </div>
+
+                                                <div>
+
+                                                    <small class="text-muted d-block">
+                                                        Dikirim oleh
+                                                    </small>
+
+                                                    <span class="sender-name">
+                                                        {{ $file->sender->name }}
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+                                        @endif
+
                                     </div>
 
                                     {{-- Context Menu --}}
+                                    @if ($file->storage_type === 'local')
                                     <div class="dropdown-menu shadow context-menu">
-                                        @if ($file->storage_type === 'local')
-                                            <a href="{{ route('files.download', $file->id) }}" class="dropdown-item" target="_blank">
-                                                <i class="bx bx-download me-1"></i> Download
-                                            </a>
-                                        @else
-                                        @endif
+                                        <a href="{{ route('files.download', $file->id) }}" class="dropdown-item" target="_blank">
+                                            <i class="bx bx-download me-1"></i> Download
+                                        </a>
                                     </div>
+                                    @else
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
@@ -307,21 +517,39 @@
 
     {{-- klik kanan --}}
     <script>
-        document.addEventListener('contextmenu', function (e) {
-            const wrapper = e.target.closest('.file-wrapper');
-            if (!wrapper) return;
+    document.addEventListener('contextmenu', function (e) {
 
-            e.preventDefault();
+        const wrapper = e.target.closest(
+            '.folder-wrapper, .file-wrapper'
+        );
 
-            document.querySelectorAll('.file-wrapper .context-menu').forEach(m => {
-                m.style.display = 'none';
-            });
+        if (!wrapper) return;
 
-            const menu = wrapper.querySelector('.context-menu');
-            menu.style.display = 'block';
-            menu.style.left = e.offsetX + 'px';
-            menu.style.top  = e.offsetY + 'px';
+        e.preventDefault();
+
+        // tutup semua menu
+        document.querySelectorAll('.context-menu').forEach(menu => {
+            menu.style.display = 'none';
         });
+
+        // ambil menu milik item yg diklik
+        const menu = wrapper.querySelector('.context-menu');
+
+        if (!menu) return;
+
+        menu.style.display = 'block';
+
+        menu.style.left = `${e.clientX}px`;
+        menu.style.top  = `${e.clientY}px`;
+
+    });
+
+    // klik kiri di luar => tutup
+    document.addEventListener('click', function () {
+        document.querySelectorAll('.context-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    });
     </script>
 
 @endsection

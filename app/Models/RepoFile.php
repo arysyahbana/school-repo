@@ -16,6 +16,9 @@ class RepoFile extends Model
         'original_name',
         'folder_id',
         'user_id',
+        'sender_id',
+        'send_batch_id',
+        'document_date',
         'storage_type',
         'path',
         'drive_url',
@@ -39,6 +42,11 @@ class RepoFile extends Model
     public function folder()
     {
         return $this->belongsTo(Folder::class);
+    }
+
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'sender_id');
     }
 
     /*

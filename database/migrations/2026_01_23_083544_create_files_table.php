@@ -21,13 +21,19 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
+            $table->foreignId('sender_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+            $table->uuid('send_batch_id')->nullable();
+            $table->date('document_date')->nullable();
             $table->string('storage_type', 20);
             $table->string('path')->nullable();
             $table->text('drive_url')->nullable();
             $table->string('mime_type')->nullable();
             $table->bigInteger('size')->nullable();
             $table->timestamps();
-            $table->index(['user_id', 'folder_id']);
+            $table->index(['user_id', 'folder_id', 'send_batch_id']);
         });
     }
 
